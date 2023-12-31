@@ -12,15 +12,26 @@ First step is data exploration (exploratory data analysis or EDA). It will help 
 - special focus on targets (distribution, plots, interactions with main features and categories)
 - overused but optional: features correlations, features correlation with target. Usefull to understand the problem. But action taken a priori rarely lead to improvement on performance. 
 
+# Data Quality
+
+- The question of initial data quality is often overlooked as the data scientist come to a relatively clean dataset. But in practices, the data quality, handled at the Data Engineering / Machine Learning Engineering level is often detrimental both for training and inference. 
+
 # Additional data
 
 - Additional Features: as you'll see below basic interactions are not difficult to learn for gbdts. However it is often a good idea to loop trough all features and look at individual performance of features of the form f1+f2, f1-f2, f1*f2, f1/f2. It might help you understand the problem / help the efficience of the model.
 - Additional Data: yes that is a no-brainer but you might want to think about getting more data before going into complex FE. Both in terms of number of additional instances and additional features. You might have a trade-off between quantity and quality.
 
-
 # Problem design
 
 Validation design is a problem in itself, especially in the context of feature engineering. As you want to perform multiple actions and ideally tests their impact independently you would need multiple staged population. It can get really difficult when you have a time component of the problem and/or when the dataset is small. So I often fallback to simpler data splits: oly perform train/tests splits and train everything on the same datasets. This approach is prone to overfitting but you can check this at once on the tests. The main drawback is that if you have overfitting you can't easily know which part is at fault. 
+
+# Feature selection
+
+- As a general rule of thumb it is a bad idea to perform a priori feature selection
+- Most of the feature selection should be done trough the tuning of the L1 regularisation parameter (let the model decide which feature to use)
+- It is often a good idea to include pure noise features to see how your pipeline / model handle them.
+- Conversely it is often interesting to test your pipeline / design with purely informative features (leaking the targets), to check if the pipeline is not to harsh.
+- You can perform some a posteriori feature selection. It is not ideal as it doesn't check each feature individually, but iteratively removing the 10-20% least important features might help.
 
 # Feature engineering
 
@@ -28,22 +39,30 @@ There is actually two kinds of feature engineering:
 - Simple feature engineering (row-wise or columns-wise). While it might helps the model learn it will not lead to huge increase in model performance. It might serves some other purposes (explainability). Generally speaking gbdt are very performant. Notably tree models do not benefit from basic columns wise FE (scaling, monotonic transformation). Row-wise FE (descriptive statistics, basic aggregation) may help the model a little bit by learning more complex patterns.
 - More complex feature engineering (rules of thumbs: FE involving multiple rows). By providing the model information with respect to other instance these technics are better candidates to improve the model.
 
-# Simple Feature engineering - (columns-wise)
+## Simple Feature engineering - (columns-wise)
 
 - Encoding categorical predictors: mostly don't. Moderns gbdts are now able to handle categoricals features natively.
 - Tranforming continuous predictors: while some requirements are valids for NN, most of the usual transformations do not matter for tree models. Notable exception is when you start to mix models or enable linear_trees approaches. 
-- Missing values / Extreme values / Sentinels values: modern gbdt can handle those. you can encode some of these as 0-1 (notably for explainability) but it shouldn't bring too much performance gain.
+- Missing values / Extreme values / Sentinels values: modern gbdt can handle those. You can encode some of these as 0-1 (notably for explainability) but it shouldn't bring too much performance gain.
+- Some supervised transformation techniques have to be mentionned (target encoding...) but rarely works in practice. 
 
-# Simple Feature engineering - (rows-wise)
+## Simple Feature engineering - (rows-wise)
 
 - Gbdt models are very performant on their owns, so they should be able to learn complex patterns.  However they are usually limited on the amount of features they can consider at once. Typically a tree with max depht = 3 will only have 7-8 splits. So it will have a hard time learning patterns that involves more than that features. If you have hints that, for exemple, average of all features might play a role, you are better using it directly. Performanc gain will usually be limited but efficience / explainability of the model might greatly increase.
 - If you are really chasing small bits of performance, the way to go is to define a list of aggreation function and subcategories of columns. So that you can get an exhaustive approach of building each features for each groups of columns.
 
-# Complex Feature engineering - (multiple columns)
+## Complex Feature engineering - (multiple columns)
 
 - PCA helps in the same fashion: it can extracts complex information from a lot of noisy columns. The big risk is that it works in an unsupervised manner: it might drop on-dominant but informative features. Most of the times you shouldn't drop the original columns and just append principal components to the original datasets. (Also don't forget scaling)
 
-# Complex Feature engineering - (multiple rows)
+## Complex Feature engineering - (multiple rows)
 
-- This is the most important candidates to improve your model. It is quite unlikely that your instances are independant. So you want to performance operations that will share some informations betweens rows.
-- 
+- Those techniques are the most important candidates to improve your model. It is quite unlikely that your instances are independant. So you want to perform operations that will share some informations betweens rows. The general way to do this it to perform some grouping or embedding, conveying more global informations into the features:
+- Build clusters (k-means, hdbscan), then add features of the clusters, features relatives to the clusters (intra-clusters ranks). The clusters can also be natural groups that appears in the data. 
+- Build neighborhoods (k-nns), then add features of the neighborhoods, or relative to the neighborhoods.
+- These clusters / neighborhoods can be built on the original data or on specific embedding (pca, umap). The embedding can be on the whole dataset or on on sub-categories of columns.
+
+ # Target engineering
+
+ - all of the above data quality and exploration apply to targets.
+ - additionally make sure that the loss and metrics are in line with your goal and the target.
