@@ -57,7 +57,7 @@ There is actually two kinds of feature engineering:
 
 ## Complex Feature engineering - (multiple rows)
 
-- Those techniques are the most important candidates to improve your model. It is quite unlikely that your instances are independant. So you want to perform operations that will share some informations betweens rows. The general way to do this it to perform some grouping or embedding, conveying more global informations into the features:
+- Those techniques are the most important candidates to improve your model. It is quite unlikely that your instances are independant. So you want to perform operations that will share some informations betweens rows. The general way to do this it to perform some grouping or embedding, then to perform FE on those, conveying more global informations into the features:
 - Build clusters (k-means, hdbscan), then add features of the clusters, features relatives to the clusters (intra-clusters ranks). The clusters can also be natural groups that appears in the data. 
 - Build neighborhoods (k-nns), then add features of the neighborhoods, or relative to the neighborhoods.
 - These clusters / neighborhoods can be built on the original data or on specific embedding (pca, umap). The embedding can be on the whole dataset or on on sub-categories of columns.
