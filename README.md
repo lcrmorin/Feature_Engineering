@@ -27,3 +27,8 @@ There is actually two kinds of feature engineering:
 - Encoding categorical predictors: mostly don't. Moderns gbdts are now able to handle categoricals features natively.
 - Tranforming continuous predictors: while some requirements are valids for NN, most of the usual transformations do not matter for tree models. Notable exception is when you start to mix models or enable linear_trees approaches. 
 - Missing values / Extreme values / Sentinels values: modern gbdt can handle those. you can encode some of these as 0-1 (notably for explainability) but it shouldn't bring too much performance gain.
+
+# Simple Feature engineering - (rows-wise)
+
+- Gbdt models are very performant on their owns, so they should be able to learn complex patterns.  However they are usually limited on the amount of features they can consider at once. Typically a tree with max depht = 3 will only have 7-8 splits. So it will have a hard time learning patterns that involves more than that features. If you have hints that, for exemple, average of all features might play a role, you are better using it directly. Performanc gain will usually be limited but efficience / explainability of the model might greatly increase.
+- If you are really chasing small bits of performance, the way to go is to define a list of aggreation function and subcategories of columns. So that you can get an exhaustive approach of building each features for each groups of columns. 
