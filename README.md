@@ -1,5 +1,5 @@
 # Feature_Engineering
-A collection of notes on features engineering for tabular data. Use: [Feature Engineering and Selection: A Practical Approach for Predictive Models]([url](https://www.amazon.com/Feature-Engineering-Selection-Practical-Predictive/dp/1138079227)) 
+A collection of notes on features engineering for tabular data. Use: [Feature Engineering and Selection: A Practical Approach for Predictive Models]([https://www.amazon.com/Feature-Engineering-Selection-Practical-Predictive/dp/1138079227]) 
 
 First source:
 
