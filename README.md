@@ -1,4 +1,4 @@
-# Opinionated Guide on Feature Engineering for tabular data
+# Opinionated Guide on Feature Engineering for Performance-led Modelling on Tabular Data
 
 A collection of notes on features engineering for tabular data. It uses [Feature Engineering and Selection: A Practical Approach for Predictive Models](https://www.amazon.com/Feature-Engineering-Selection-Practical-Predictive/dp/1138079227) as a Guidelines. The general idea is to list FE ideas, provide an opinion with aims to improve the performance of a gbdt model. It doesn't make an assumption on which flavor of gbdt is used (but you probably need to start with lightgbm). 
 
