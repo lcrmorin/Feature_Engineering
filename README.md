@@ -12,6 +12,12 @@ First step is data exploration (exploratory data analysis or EDA). It will help 
 - special focus on targets (distribution, plots, interactions with main features and categories)
 - overused but optional: features correlations, features correlation with target. Usefull to understand the problem. But action taken a priori rarely lead to improvement on performance. 
 
+# Additional data
+
+- Additional Features: as you'll see below basic interactions are not difficult to learn for gbdts. However it is often a good idea to loop trough all features and look at individual performance of features of the form f1+f2, f1-f2, f1*f2, f1/f2. It might help you understand the problem / help the efficience of the model.
+- Additional Data: yes that is a no-brainer but you might want to think about getting more data before going into complex FE. Both in terms of number of additional instances and additional features. You might have a trade-off between quantity and quality.
+
+
 # Problem design
 
 Validation design is a problem in itself, especially in the context of feature engineering. As you want to perform multiple actions and ideally tests their impact independently you would need multiple staged population. It can get really difficult when you have a time component of the problem and/or when the dataset is small. So I often fallback to simpler data splits: oly perform train/tests splits and train everything on the same datasets. This approach is prone to overfitting but you can check this at once on the tests. The main drawback is that if you have overfitting you can't easily know which part is at fault. 
@@ -31,4 +37,13 @@ There is actually two kinds of feature engineering:
 # Simple Feature engineering - (rows-wise)
 
 - Gbdt models are very performant on their owns, so they should be able to learn complex patterns.  However they are usually limited on the amount of features they can consider at once. Typically a tree with max depht = 3 will only have 7-8 splits. So it will have a hard time learning patterns that involves more than that features. If you have hints that, for exemple, average of all features might play a role, you are better using it directly. Performanc gain will usually be limited but efficience / explainability of the model might greatly increase.
-- If you are really chasing small bits of performance, the way to go is to define a list of aggreation function and subcategories of columns. So that you can get an exhaustive approach of building each features for each groups of columns. 
+- If you are really chasing small bits of performance, the way to go is to define a list of aggreation function and subcategories of columns. So that you can get an exhaustive approach of building each features for each groups of columns.
+
+# Complex Feature engineering - (multiple columns)
+
+- PCA helps in the same fashion: it can extracts complex information from a lot of noisy columns. The big risk is that it works in an unsupervised manner: it might drop on-dominant but informative features. Most of the times you shouldn't drop the original columns and just append principal components to the original datasets. (Also don't forget scaling)
+
+# Complex Feature engineering - (multiple rows)
+
+- This is the most important candidates to improve your model. It is quite unlikely that your instances are independant. So you want to performance operations that will share some informations betweens rows.
+- 
